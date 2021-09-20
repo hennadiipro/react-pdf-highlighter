@@ -3,7 +3,9 @@
   "version": "5.4.0",
   "description": "A modification of react-pdf-highlighter that categorizes highlights",
   "author": "Antti Hiltunen ",
-  "contributors": ["Artem Tyurin <artem.tyurin@gmail.com>"],
+  "contributors": [
+    "Artem Tyurin <artem.tyurin@gmail.com>"
+  ],
   "license": "MIT",
   "keywords": [
     "pdf",

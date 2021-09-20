@@ -5,22 +5,31 @@ import { getPageFromElement } from "../lib/pdfjs-dom";
 
 import "../style/AreaHighlight.css";
 
-import type { LTWHP, ViewportHighlight } from "../types";
+import type { LTWHP, ViewportHighlight } from "../types.js";
 
 interface Props {
   highlight: ViewportHighlight;
   onChange: (rect: LTWHP) => void;
+  comment: {
+    category: string;
+    text: string;
+  };
   isScrolledTo: boolean;
 }
 
 export class AreaHighlight extends Component<Props> {
   render() {
-    const { highlight, onChange, isScrolledTo, ...otherProps } = this.props;
+    const { highlight, onChange, comment, isScrolledTo, ...otherProps } =
+      this.props;
 
     return (
       <div
         className={`AreaHighlight ${
-          isScrolledTo ? "AreaHighlight--scrolledTo" : ""
+          isScrolledTo
+            ? "AreaHighlight--scrolledTo"
+            : comment && comment.category
+            ? `AreaHighlight--${comment.category}`
+            : ""
         }`}
       >
         <Rnd
