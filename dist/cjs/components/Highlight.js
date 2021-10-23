@@ -25,7 +25,7 @@ require("../style/Highlight.css");
 class Highlight extends react_1.Component {
     render() {
         const { categoryLabels, position, onClick, onMouseOver, onMouseOut, comment, isScrolledTo, } = this.props;
-        const { rects, boundingRect } = position;
+        const { rects } = position;
         const handleStyle = (rect, labels) => {
             let color = "#ddcc77";
             if (isScrolledTo) {
@@ -43,10 +43,6 @@ class Highlight extends react_1.Component {
         /* : comment && comment.category
                 ? `Highlight--${comment.category}` */
         return (react_1.default.createElement("div", { className: `Highlight ${isScrolledTo ? "Highlight--scrolledTo" : ""}` },
-            comment ? (react_1.default.createElement("div", { className: "Highlight__category", style: {
-                    left: 0,
-                    top: boundingRect.top,
-                } }, comment.category)) : null,
             react_1.default.createElement("div", { className: "Highlight__parts" }, rects.map((rect, index) => (react_1.default.createElement("div", { onMouseOver: onMouseOver, onMouseOut: onMouseOut, onClick: onClick, key: index, style: handleStyle(rect, categoryLabels), 
                 //style={rect}
                 className: `Highlight__part` }))))));
