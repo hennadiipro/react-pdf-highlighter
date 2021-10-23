@@ -32,7 +32,7 @@ export class Highlight extends Component<Props> {
       isScrolledTo,
     } = this.props;
 
-    const { rects, boundingRect } = position;
+    const { rects } = position;
 
     const handleStyle = (
       rect: {},
@@ -60,17 +60,6 @@ export class Highlight extends Component<Props> {
       <div
         className={`Highlight ${isScrolledTo ? "Highlight--scrolledTo" : ""}`}
       >
-        {comment ? (
-          <div
-            className="Highlight__category"
-            style={{
-              left: 0,
-              top: boundingRect.top,
-            }}
-          >
-            {comment.category}
-          </div>
-        ) : null}
         <div className="Highlight__parts">
           {rects.map((rect, index) => (
             <div
