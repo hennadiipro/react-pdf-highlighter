@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 
 import { getDocument, GlobalWorkerOptions } from "pdfjs-dist/legacy/build/pdf";
-import type { PDFDocumentProxy } from "pdfjs-dist";
+import type { PDFDocumentProxy, TypedArray } from "pdfjs-dist";
 
 interface Props {
   /** See `GlobalWorkerOptionsType`. */
   workerSrc: string;
-
+  data?: TypedArray | null;
   url: string;
   beforeLoad: JSX.Element;
   errorMessage?: JSX.Element;
@@ -44,8 +44,11 @@ export class PdfLoader extends Component<Props, State> {
     }
   }
 
-  componentDidUpdate({ url }: Props) {
+  componentDidUpdate({ data, url }: Props) {
     if (this.props.url !== url) {
+      this.load();
+    }
+    if (this.props.data !== data) {
       this.load();
     }
   }
@@ -62,7 +65,7 @@ export class PdfLoader extends Component<Props, State> {
 
   load() {
     const { ownerDocument = document } = this.documentRef.current || {};
-    const { url, cMapUrl, cMapPacked, workerSrc } = this.props;
+    const { workerSrc } = this.props;
     const { pdfDocument: discardedDocument } = this.state;
     this.setState({ pdfDocument: null, error: null });
 
@@ -73,18 +76,24 @@ export class PdfLoader extends Component<Props, State> {
     Promise.resolve()
       .then(() => discardedDocument && discardedDocument.destroy())
       .then(() => {
-        if (!url) {
-          return;
-        }
-
-        return getDocument({
-          ...this.props,
-          ownerDocument,
-          cMapUrl,
-          cMapPacked,
-        }).promise.then((pdfDocument) => {
-          this.setState({ pdfDocument });
-        });
+        const { data, url, ...otherProps } = this.props;
+        if (url) {
+          return getDocument({
+            url,
+            ownerDocument,
+            ...otherProps,
+          }).promise.then((pdfDocument) => {
+            this.setState({ pdfDocument });
+          });
+        } else if (data) {
+          return getDocument({
+            data,
+            ownerDocument,
+            ...otherProps,
+          }).promise.then((pdfDocument) => {
+            this.setState({ pdfDocument });
+          });
+        } else return;
       })
       .catch((e) => this.componentDidCatch(e));
   }

@@ -18,6 +18,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PdfLoader = void 0;
 const react_1 = __importStar(require("react"));
@@ -40,8 +51,11 @@ class PdfLoader extends react_1.Component {
             discardedDocument.destroy();
         }
     }
-    componentDidUpdate({ url }) {
+    componentDidUpdate({ data, url }) {
         if (this.props.url !== url) {
+            this.load();
+        }
+        if (this.props.data !== data) {
             this.load();
         }
     }
@@ -54,7 +68,7 @@ class PdfLoader extends react_1.Component {
     }
     load() {
         const { ownerDocument = document } = this.documentRef.current || {};
-        const { url, cMapUrl, cMapPacked, workerSrc } = this.props;
+        const { workerSrc } = this.props;
         const { pdfDocument: discardedDocument } = this.state;
         this.setState({ pdfDocument: null, error: null });
         if (typeof workerSrc === "string") {
@@ -63,14 +77,21 @@ class PdfLoader extends react_1.Component {
         Promise.resolve()
             .then(() => discardedDocument && discardedDocument.destroy())
             .then(() => {
-            if (!url) {
-                return;
+            const _a = this.props, { data, url } = _a, otherProps = __rest(_a, ["data", "url"]);
+            if (url) {
+                return (0, pdf_1.getDocument)(Object.assign({ url,
+                    ownerDocument }, otherProps)).promise.then((pdfDocument) => {
+                    this.setState({ pdfDocument });
+                });
             }
-            return (0, pdf_1.getDocument)(Object.assign(Object.assign({}, this.props), { ownerDocument,
-                cMapUrl,
-                cMapPacked })).promise.then((pdfDocument) => {
-                this.setState({ pdfDocument });
-            });
+            else if (data) {
+                return (0, pdf_1.getDocument)(Object.assign({ data,
+                    ownerDocument }, otherProps)).promise.then((pdfDocument) => {
+                    this.setState({ pdfDocument });
+                });
+            }
+            else
+                return;
         })
             .catch((e) => this.componentDidCatch(e));
     }

@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import type { PDFDocumentProxy } from "pdfjs-dist/types/display/api";
+import type { PDFDocumentProxy, TypedArray } from "pdfjs-dist/types/display/api";
 interface Props {
     /** See `GlobalWorkerOptionsType`. */
     workerSrc: string;
+    data?: TypedArray | null;
     url: string;
     beforeLoad: JSX.Element;
     errorMessage?: JSX.Element;
@@ -23,7 +24,7 @@ export declare class PdfLoader extends Component<Props, State> {
     documentRef: React.RefObject<HTMLElement>;
     componentDidMount(): void;
     componentWillUnmount(): void;
-    componentDidUpdate({ url }: Props): void;
+    componentDidUpdate({ data, url }: Props): void;
     componentDidCatch(error: Error, info?: any): void;
     load(): void;
     render(): JSX.Element;
