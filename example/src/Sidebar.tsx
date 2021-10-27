@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import type { IHighlight } from "./react-pdf-highlighter";
+import CategoryEditor from "./CategoryEditor";
 
 interface Props {
+  categoryLabels: { label: string; background: string }[];
+  setCategoryLabels: (update: { label: string; background: string }[]) => void;
   highlights: Array<IHighlight>;
   resetHighlights: () => void;
   toggleDocument: () => void;
@@ -12,21 +15,18 @@ const updateHash = (highlight: IHighlight) => {
 };
 
 export function Sidebar({
+  categoryLabels,
+  setCategoryLabels,
   highlights,
   toggleDocument,
   resetHighlights,
 }: Props) {
+  const [show, setShow] = useState(false);
+
   return (
     <div className="sidebar" style={{ width: "25vw" }}>
       <div className="description" style={{ padding: "1rem" }}>
         <h2 style={{ marginBottom: "1rem" }}>react-pdf-highlighter</h2>
-
-        <p style={{ fontSize: "0.7rem" }}>
-          <a href="https://github.com/agentcooper/react-pdf-highlighter">
-            Open in GitHub
-          </a>
-        </p>
-
         <p>
           <small>
             To create area highlight hold ⌥ Option key (Alt), then click and
@@ -34,6 +34,8 @@ export function Sidebar({
           </small>
         </p>
       </div>
+
+      <button onClick={() => setShow(true)}>Edit Categories</button>
 
       <ul className="sidebar__highlights">
         {highlights.map((highlight, index) => (
@@ -74,6 +76,13 @@ export function Sidebar({
           <button onClick={resetHighlights}>Reset highlights</button>
         </div>
       ) : null}
+
+      <CategoryEditor
+        categoryLabels={categoryLabels}
+        setCategoryLabels={setCategoryLabels}
+        show={show}
+        setShow={setShow}
+      />
     </div>
   );
 }

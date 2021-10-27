@@ -71,6 +71,12 @@ class App extends Component<{}, State> {
     });
   };
 
+  setCategoryLabels = (update: { label: string; background: string }[]) => {
+    this.setState((prev) => {
+      return { ...prev, categoryLabels: update };
+    });
+  };
+
   toggleDocument = () => {
     const newUrl =
       this.state.url === PRIMARY_PDF_URL ? SECONDARY_PDF_URL : PRIMARY_PDF_URL;
@@ -147,6 +153,8 @@ class App extends Component<{}, State> {
           highlights={highlights}
           resetHighlights={this.resetHighlights}
           toggleDocument={this.toggleDocument}
+          categoryLabels={this.state.categoryLabels}
+          setCategoryLabels={this.setCategoryLabels}
         />
         <div
           style={{
@@ -158,6 +166,7 @@ class App extends Component<{}, State> {
           <PdfLoader url={url} beforeLoad={<Spinner />}>
             {(pdfDocument) => (
               <PdfHighlighter
+                categoryLabels={this.state.categoryLabels}
                 pdfDocument={pdfDocument}
                 enableAreaSelection={(event) => event.altKey}
                 onScrollChange={resetHash}
@@ -171,7 +180,8 @@ class App extends Component<{}, State> {
                   position,
                   content,
                   hideTipAndSelection,
-                  transformSelection
+                  transformSelection,
+                  categoryLabels
                 ) => (
                   <Tip
                     onOpen={transformSelection}
@@ -180,7 +190,7 @@ class App extends Component<{}, State> {
 
                       hideTipAndSelection();
                     }}
-                    categoryLabels={this.state.categoryLabels}
+                    categoryLabels={categoryLabels}
                   />
                 )}
                 highlightTransform={(

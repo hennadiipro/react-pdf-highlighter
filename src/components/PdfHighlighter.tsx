@@ -61,6 +61,7 @@ interface State<T_HT> {
 }
 
 interface Props<T_HT> {
+  categoryLabels: Array<{ label: string; background: string }>;
   highlightTransform: (
     highlight: T_ViewportHighlight<T_HT>,
     index: number,
@@ -82,7 +83,8 @@ interface Props<T_HT> {
     position: ScaledPosition,
     content: { text?: string; image?: string },
     hideTipAndSelection: () => void,
-    transformSelection: () => void
+    transformSelection: () => void,
+    categoryLabels: Array<{ label: string; background: string }>
   ) => JSX.Element | null;
   enableAreaSelection: (event: MouseEvent) => boolean;
 }
@@ -659,7 +661,8 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
               ghostHighlight: { position: scaledPosition },
             },
             () => this.renderHighlights()
-          )
+          ),
+        this.props.categoryLabels
       )
     );
   };
@@ -751,7 +754,8 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
                           resetSelection();
                           this.renderHighlights();
                         }
-                      )
+                      ),
+                    this.props.categoryLabels
                   )
                 );
               }}
