@@ -27,6 +27,10 @@ interface State<T_HT> {
     scrolledToHighlightId: string;
 }
 interface Props<T_HT> {
+    categoryLabels: Array<{
+        label: string;
+        background: string;
+    }>;
     highlightTransform: (highlight: T_ViewportHighlight<T_HT>, index: number, setTip: (highlight: T_ViewportHighlight<T_HT>, callback: (highlight: T_ViewportHighlight<T_HT>) => JSX.Element) => void, hideTip: () => void, viewportToScaled: (rect: LTWH) => Scaled, screenshot: (position: LTWH) => string, isScrolledTo: boolean) => JSX.Element;
     highlights: Array<T_HT>;
     onScrollChange: () => void;
@@ -36,7 +40,10 @@ interface Props<T_HT> {
     onSelectionFinished: (position: ScaledPosition, content: {
         text?: string;
         image?: string;
-    }, hideTipAndSelection: () => void, transformSelection: () => void) => JSX.Element | null;
+    }, hideTipAndSelection: () => void, transformSelection: () => void, categoryLabels: Array<{
+        label: string;
+        background: string;
+    }>) => JSX.Element | null;
     enableAreaSelection: (event: MouseEvent) => boolean;
 }
 export declare class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<Props<T_HT>, State<T_HT>> {

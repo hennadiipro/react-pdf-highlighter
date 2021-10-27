@@ -279,7 +279,7 @@ class PdfHighlighter extends react_1.PureComponent {
             const scaledPosition = this.viewportPositionToScaled(viewportPosition);
             this.setTip(viewportPosition, onSelectionFinished(scaledPosition, content, () => this.hideTipAndSelection(), () => this.setState({
                 ghostHighlight: { position: scaledPosition },
-            }, () => this.renderHighlights())));
+            }, () => this.renderHighlights()), this.props.categoryLabels));
         };
         this.debouncedAfterSelection = (0, lodash_debounce_1.default)(this.afterSelection, 500);
         this.handleScaleValue = () => {
@@ -437,7 +437,7 @@ class PdfHighlighter extends react_1.PureComponent {
                         }, () => {
                             resetSelection();
                             this.renderHighlights();
-                        })));
+                        }), this.props.categoryLabels));
                     } })) : null)));
     }
 }

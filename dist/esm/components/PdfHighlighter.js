@@ -256,7 +256,7 @@ export class PdfHighlighter extends PureComponent {
             const scaledPosition = this.viewportPositionToScaled(viewportPosition);
             this.setTip(viewportPosition, onSelectionFinished(scaledPosition, content, () => this.hideTipAndSelection(), () => this.setState({
                 ghostHighlight: { position: scaledPosition },
-            }, () => this.renderHighlights())));
+            }, () => this.renderHighlights()), this.props.categoryLabels));
         };
         this.debouncedAfterSelection = debounce(this.afterSelection, 500);
         this.handleScaleValue = () => {
@@ -414,7 +414,7 @@ export class PdfHighlighter extends PureComponent {
                         }, () => {
                             resetSelection();
                             this.renderHighlights();
-                        })));
+                        }), this.props.categoryLabels));
                     } })) : null)));
     }
 }
