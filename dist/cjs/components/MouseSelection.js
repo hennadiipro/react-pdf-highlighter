@@ -120,7 +120,7 @@ class MouseSelection extends react_1.Component {
                         return;
                     }
                     if ((0, pdfjs_dom_1.isHTMLElement)(event.target)) {
-                        onSelection(startTarget, boundingRect, that.reset);
+                        onSelection(startTarget, boundingRect, that.reset, this.props.categoryLabels);
                         onDragEnd();
                     }
                 });

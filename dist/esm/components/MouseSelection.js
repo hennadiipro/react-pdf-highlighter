@@ -99,7 +99,7 @@ class MouseSelection extends Component {
                         return;
                     }
                     if (isHTMLElement(event.target)) {
-                        onSelection(startTarget, boundingRect, that.reset);
+                        onSelection(startTarget, boundingRect, that.reset, this.props.categoryLabels);
                         onDragEnd();
                     }
                 });

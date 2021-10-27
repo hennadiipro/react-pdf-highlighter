@@ -32,7 +32,7 @@ const CategoryEditor = ({
         ...previous,
         {
           label: labelInput,
-          background: Math.floor(Math.random() * 16777215).toString(16),
+          background: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
         },
       ]);
     }
@@ -80,7 +80,9 @@ const CategoryEditor = ({
               return (
                 <li key={label.label} style={{ display: "flex" }}>
                   {label.label}
-                  <button onClick={deleteCategoryLabel}>Delete</button>
+                  <button id={label.label} onClick={deleteCategoryLabel}>
+                    Delete
+                  </button>
                 </li>
               );
             })}

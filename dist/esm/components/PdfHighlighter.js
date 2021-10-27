@@ -386,14 +386,14 @@ export class PdfHighlighter extends PureComponent {
         this.viewer.viewer.classList.toggle("PdfHighlighter--disable-selection", flag);
     }
     render() {
-        const { onSelectionFinished, enableAreaSelection } = this.props;
+        const { onSelectionFinished, enableAreaSelection, categoryLabels } = this.props;
         return (React.createElement("div", { onPointerDown: this.onMouseDown },
             React.createElement("div", { ref: this.attachRef, className: "PdfHighlighter", onContextMenu: (e) => e.preventDefault() },
                 React.createElement("div", { className: "pdfViewer" }),
                 this.renderTip(),
-                typeof enableAreaSelection === "function" ? (React.createElement(MouseSelection, { onDragStart: () => this.toggleTextSelection(true), onDragEnd: () => this.toggleTextSelection(false), onChange: (isVisible) => this.setState({ isAreaSelectionInProgress: isVisible }), shouldStart: (event) => enableAreaSelection(event) &&
+                typeof enableAreaSelection === "function" ? (React.createElement(MouseSelection, { categoryLabels: categoryLabels, onDragStart: () => this.toggleTextSelection(true), onDragEnd: () => this.toggleTextSelection(false), onChange: (isVisible) => this.setState({ isAreaSelectionInProgress: isVisible }), shouldStart: (event) => enableAreaSelection(event) &&
                         isHTMLElement(event.target) &&
-                        Boolean(asElement(event.target).closest(".page")), onSelection: (startTarget, boundingRect, resetSelection) => {
+                        Boolean(asElement(event.target).closest(".page")), onSelection: (startTarget, boundingRect, resetSelection, cLabels) => {
                         const page = getPageFromElement(startTarget);
                         if (!page) {
                             return;
@@ -414,7 +414,7 @@ export class PdfHighlighter extends PureComponent {
                         }, () => {
                             resetSelection();
                             this.renderHighlights();
-                        }), this.props.categoryLabels));
+                        }), cLabels));
                     } })) : null)));
     }
 }

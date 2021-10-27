@@ -409,14 +409,14 @@ class PdfHighlighter extends react_1.PureComponent {
         this.viewer.viewer.classList.toggle("PdfHighlighter--disable-selection", flag);
     }
     render() {
-        const { onSelectionFinished, enableAreaSelection } = this.props;
+        const { onSelectionFinished, enableAreaSelection, categoryLabels } = this.props;
         return (react_1.default.createElement("div", { onPointerDown: this.onMouseDown },
             react_1.default.createElement("div", { ref: this.attachRef, className: "PdfHighlighter", onContextMenu: (e) => e.preventDefault() },
                 react_1.default.createElement("div", { className: "pdfViewer" }),
                 this.renderTip(),
-                typeof enableAreaSelection === "function" ? (react_1.default.createElement(MouseSelection_1.default, { onDragStart: () => this.toggleTextSelection(true), onDragEnd: () => this.toggleTextSelection(false), onChange: (isVisible) => this.setState({ isAreaSelectionInProgress: isVisible }), shouldStart: (event) => enableAreaSelection(event) &&
+                typeof enableAreaSelection === "function" ? (react_1.default.createElement(MouseSelection_1.default, { categoryLabels: categoryLabels, onDragStart: () => this.toggleTextSelection(true), onDragEnd: () => this.toggleTextSelection(false), onChange: (isVisible) => this.setState({ isAreaSelectionInProgress: isVisible }), shouldStart: (event) => enableAreaSelection(event) &&
                         (0, pdfjs_dom_1.isHTMLElement)(event.target) &&
-                        Boolean((0, pdfjs_dom_1.asElement)(event.target).closest(".page")), onSelection: (startTarget, boundingRect, resetSelection) => {
+                        Boolean((0, pdfjs_dom_1.asElement)(event.target).closest(".page")), onSelection: (startTarget, boundingRect, resetSelection, cLabels) => {
                         const page = (0, pdfjs_dom_1.getPageFromElement)(startTarget);
                         if (!page) {
                             return;
@@ -437,7 +437,7 @@ class PdfHighlighter extends react_1.PureComponent {
                         }, () => {
                             resetSelection();
                             this.renderHighlights();
-                        }), this.props.categoryLabels));
+                        }), cLabels));
                     } })) : null)));
     }
 }

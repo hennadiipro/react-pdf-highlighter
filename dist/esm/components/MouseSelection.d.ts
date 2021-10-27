@@ -11,11 +11,18 @@ interface State {
     end: Coords | null;
 }
 interface Props {
-    onSelection: (startTarget: HTMLElement, boundingRect: LTWH, resetSelection: () => void) => void;
+    onSelection: (startTarget: HTMLElement, boundingRect: LTWH, resetSelection: () => void, categoryLabels: Array<{
+        label: string;
+        background: string;
+    }>) => void;
     onDragStart: () => void;
     onDragEnd: () => void;
     shouldStart: (event: MouseEvent) => boolean;
     onChange: (isVisible: boolean) => void;
+    categoryLabels: Array<{
+        label: string;
+        background: string;
+    }>;
 }
 declare class MouseSelection extends Component<Props, State> {
     state: State;
