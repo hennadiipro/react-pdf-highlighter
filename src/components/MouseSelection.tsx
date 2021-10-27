@@ -20,12 +20,14 @@ interface Props {
   onSelection: (
     startTarget: HTMLElement,
     boundingRect: LTWH,
-    resetSelection: () => void
+    resetSelection: () => void,
+    categoryLabels: Array<{ label: string; background: string }>
   ) => void;
   onDragStart: () => void;
   onDragEnd: () => void;
   shouldStart: (event: MouseEvent) => boolean;
   onChange: (isVisible: boolean) => void;
+  categoryLabels: Array<{ label: string; background: string }>;
 }
 
 class MouseSelection extends Component<Props, State> {
@@ -166,7 +168,12 @@ class MouseSelection extends Component<Props, State> {
             }
 
             if (isHTMLElement(event.target)) {
-              onSelection(startTarget, boundingRect, that.reset);
+              onSelection(
+                startTarget,
+                boundingRect,
+                that.reset,
+                this.props.categoryLabels
+              );
 
               onDragEnd();
             }

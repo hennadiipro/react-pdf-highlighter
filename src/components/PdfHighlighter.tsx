@@ -685,7 +685,8 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
   debouncedScaleValue: () => void = debounce(this.handleScaleValue, 500);
 
   render() {
-    const { onSelectionFinished, enableAreaSelection } = this.props;
+    const { onSelectionFinished, enableAreaSelection, categoryLabels } =
+      this.props;
 
     return (
       <div onPointerDown={this.onMouseDown}>
@@ -698,6 +699,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
           {this.renderTip()}
           {typeof enableAreaSelection === "function" ? (
             <MouseSelection
+              categoryLabels={categoryLabels}
               onDragStart={() => this.toggleTextSelection(true)}
               onDragEnd={() => this.toggleTextSelection(false)}
               onChange={(isVisible) =>
@@ -708,7 +710,12 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
                 isHTMLElement(event.target) &&
                 Boolean(asElement(event.target).closest(".page"))
               }
-              onSelection={(startTarget, boundingRect, resetSelection) => {
+              onSelection={(
+                startTarget,
+                boundingRect,
+                resetSelection,
+                cLabels
+              ) => {
                 const page = getPageFromElement(startTarget);
 
                 if (!page) {
@@ -755,7 +762,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
                           this.renderHighlights();
                         }
                       ),
-                    this.props.categoryLabels
+                    cLabels
                   )
                 );
               }}
