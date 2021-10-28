@@ -26,13 +26,13 @@ export class Tip extends Component {
                 event.preventDefault();
                 onConfirm({ text, category: category });
             } },
-            React.createElement("div", null,
+            React.createElement("div", { className: "Tip__content" },
                 React.createElement("textarea", { placeholder: "Your comment", autoFocus: true, value: text, onChange: (event) => this.setState({ text: event.target.value }), ref: (node) => {
                         if (node) {
                             node.focus();
                         }
                     } }),
-                React.createElement("div", null, categoryLabels.map((_category) => (React.createElement("label", { key: _category.label },
+                React.createElement("div", { className: "Tip__list" }, categoryLabels.map((_category) => (React.createElement("label", { key: _category.label, className: "Tip__list-item" },
                     React.createElement("input", { checked: category === _category.label, type: "radio", name: "category", value: _category.label, onChange: (event) => this.setState({ category: event.target.value }) }),
                     _category.label))))),
             React.createElement("div", null,

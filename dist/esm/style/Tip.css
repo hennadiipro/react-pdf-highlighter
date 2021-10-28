@@ -27,3 +27,21 @@
   margin-top: 5px;
   font-size: large;
 }
+
+.Tip__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.Tip__list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 5px;
+}
+
+.Tip__list-item {
+  display: flex;
+  justify-content: flex-start;
+}

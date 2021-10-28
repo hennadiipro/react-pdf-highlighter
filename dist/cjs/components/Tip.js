@@ -48,13 +48,13 @@ class Tip extends react_1.Component {
                 event.preventDefault();
                 onConfirm({ text, category: category });
             } },
-            react_1.default.createElement("div", null,
+            react_1.default.createElement("div", { className: "Tip__content" },
                 react_1.default.createElement("textarea", { placeholder: "Your comment", autoFocus: true, value: text, onChange: (event) => this.setState({ text: event.target.value }), ref: (node) => {
                         if (node) {
                             node.focus();
                         }
                     } }),
-                react_1.default.createElement("div", null, categoryLabels.map((_category) => (react_1.default.createElement("label", { key: _category.label },
+                react_1.default.createElement("div", { className: "Tip__list" }, categoryLabels.map((_category) => (react_1.default.createElement("label", { key: _category.label, className: "Tip__list-item" },
                     react_1.default.createElement("input", { checked: category === _category.label, type: "radio", name: "category", value: _category.label, onChange: (event) => this.setState({ category: event.target.value }) }),
                     _category.label))))),
             react_1.default.createElement("div", null,

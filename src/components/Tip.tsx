@@ -55,7 +55,7 @@ export class Tip extends Component<Props, State> {
               onConfirm({ text, category: category });
             }}
           >
-            <div>
+            <div className="Tip__content">
               <textarea
                 placeholder="Your comment"
                 autoFocus
@@ -69,9 +69,10 @@ export class Tip extends Component<Props, State> {
                   }
                 }}
               />
-              <div>
+
+              <div className="Tip__list">
                 {categoryLabels.map((_category) => (
-                  <label key={_category.label}>
+                  <label key={_category.label} className="Tip__list-item">
                     <input
                       checked={category === _category.label}
                       type="radio"
