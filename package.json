@@ -1,9 +1,10 @@
 {
-  "name": "react-pdf-highlighter-with-categories",
+  "name": "@argument-studio/react-pdf-highlighter-with-categories",
   "version": "5.4.0",
   "description": "A modification of react-pdf-highlighter that categorizes highlights",
-  "author": "Antti Hiltunen ",
+  "author": "Antti Hiltunen",
   "contributors": [
+    "John Kardosh",
     "Artem Tyurin <artem.tyurin@gmail.com>"
   ],
   "license": "MIT",
