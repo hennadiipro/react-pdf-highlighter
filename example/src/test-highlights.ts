@@ -1,4 +1,6 @@
-export const testHighlights = {
+import { IHighlight } from "./react-pdf-highlighter";
+
+export const testHighlights: Record<string, IHighlight[]> = {
   "https://arxiv.org/pdf/1708.08021.pdf": [
     {
       content: {
@@ -196,7 +198,7 @@ export const testHighlights = {
     },
     {
       id: "46570518065661616",
-      comment: { text: "Fast type checking?!?!", emoji: "😱" },
+      comment: { text: "Fast type checking?!?!", category: "" },
       content: {
         text: "Fast type checking.The key toFlow’s speed is modularity: the ability to break the analysis intofile-sized chunks that can be assembled later. Fortunately, JavaScript is already written using files4Avik Chaudhuri, Panagiotis Vekris, Sam Goldman, Marshall Roch, and Gabriel Levias modules, so we modularize our analysis simply by asking that modules have explicitly typedsignatures. (We still infer types for the vast majority of code “local” to modules.) Coincidentally,developers consider this good software engineering practice anyway.",
       },
