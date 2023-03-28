@@ -1,13 +1,7 @@
-import React, { PointerEventHandler, PureComponent } from "react";
-import ReactDom from "react-dom";
+import React, {PointerEventHandler, PureComponent} from "react";
 import debounce from "lodash.debounce";
 
-import {
-  EventBus,
-  NullL10n,
-  PDFViewer,
-  PDFLinkService,
-} from "pdfjs-dist/web/pdf_viewer";
+import {EventBus, NullL10n, PDFLinkService, PDFViewer,} from "pdfjs-dist/web/pdf_viewer";
 
 import "pdfjs-dist/web/pdf_viewer.css";
 import "../style/pdf_viewer.css";
@@ -20,27 +14,21 @@ import getAreaAsPng from "../lib/get-area-as-png";
 
 import {
   asElement,
-  getPagesFromRange,
-  getPageFromElement,
-  getWindow,
   findOrCreateContainerLayer,
+  getPageFromElement,
+  getPagesFromRange,
+  getWindow,
   isHTMLElement,
 } from "../lib/pdfjs-dom";
 
 import TipContainer from "./TipContainer";
 import MouseSelection from "./MouseSelection";
 
-import { scaledToViewport, viewportToScaled } from "../lib/coordinates";
+import {scaledToViewport, viewportToScaled} from "../lib/coordinates";
 
-import type {
-  Position,
-  ScaledPosition,
-  IHighlight,
-  Scaled,
-  LTWH,
-  LTWHP,
-} from "../types";
-import type { PDFDocumentProxy } from "pdfjs-dist";
+import type {IHighlight, LTWH, LTWHP, Position, Scaled, ScaledPosition,} from "../types";
+import type {PDFDocumentProxy} from "pdfjs-dist";
+import ReactDOM from "react-dom/client";
 
 type T_ViewportHighlight<T_HT> = { position: Position } & T_HT;
 
@@ -324,7 +312,53 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
       const highlightLayer = this.findOrCreateHighlightLayer(pageNumber);
 
       if (highlightLayer) {
-        ReactDom.render(
+   const root = ReactDOM.createRoot(
+           highlightLayer as HTMLElement
+        );
+
+   root.render(
+       <div>
+         {(highlightsByPage[String(pageNumber)] || []).map(
+             ({ position, id, ...highlight }, index) => {
+               // @ts-ignore
+               const viewportHighlight: T_ViewportHighlight<T_HT> = {
+                 id,
+                 position: this.scaledPositionToViewport(position),
+                 ...highlight,
+               };
+
+               if (tip && tip.highlight.id === String(id)) {
+                 this.showTip(tip.highlight, tip.callback(viewportHighlight));
+               }
+
+               const isScrolledTo = Boolean(scrolledToHighlightId === id);
+
+               return highlightTransform(
+                   viewportHighlight,
+                   index,
+                   (highlight, callback) => {
+                     this.setState({
+                       tip: { highlight, callback },
+                     });
+
+                     this.showTip(highlight, callback(highlight));
+                   },
+                   this.hideTipAndSelection,
+                   (rect) => {
+                     const viewport = this.viewer.getPageView(
+                         (rect.pageNumber || pageNumber) - 1
+                     ).viewport;
+
+                     return viewportToScaled(rect, viewport);
+                   },
+                   (boundingRect) => this.screenshot(boundingRect, pageNumber),
+                   isScrolledTo
+               );
+             }
+         )}
+       </div>,
+   )
+/*        ReactDom.render(
           <div>
             {(highlightsByPage[String(pageNumber)] || []).map(
               ({ position, id, ...highlight }, index) => {
@@ -366,7 +400,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
             )}
           </div>,
           highlightLayer
-        );
+        );*/
       }
     }
   }
@@ -597,7 +631,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
         But what if the startContainer is not within the nodes filtered by
         TreeWalker? Then the textnodes in range must start immediately 
         at the beginning. Thus, isInRange must be set "true" at the outset.  */
-        let isInRange = range.startContainer.nodeType !== 3 ? true : false;
+        let isInRange = range.startContainer.nodeType !== 3;
 
         while ((node = walk.nextNode())) {
           if (node === range.startContainer) {
@@ -624,12 +658,11 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
       ) {
         return stringWithSpaces.trim();
       } else if (range.startContainer.nodeType !== 3) {
-        const slicedString = stringWithSpaces.slice(
-          0,
-          stringWithSpaces.length -
+        return stringWithSpaces.slice(
+            0,
+            stringWithSpaces.length -
             ((range.endContainer as Text).length - range.endOffset)
         );
-        return slicedString;
       } else if (range.endContainer.nodeType !== 3) {
         const slicedString = stringWithSpaces.slice(range.startOffset);
         return slicedString.trim();
