@@ -1,7 +1,13 @@
-import React, {PointerEventHandler, PureComponent} from "react";
+import React, { PointerEventHandler, PureComponent } from "react";
+import { Root, createRoot } from "react-dom/client";
 import debounce from "lodash.debounce";
 
-import {EventBus, NullL10n, PDFLinkService, PDFViewer,} from "pdfjs-dist/web/pdf_viewer";
+import {
+  EventBus,
+  NullL10n,
+  PDFLinkService,
+  PDFViewer,
+} from "pdfjs-dist/web/pdf_viewer";
 
 import "pdfjs-dist/web/pdf_viewer.css";
 import "../style/pdf_viewer.css";
@@ -24,11 +30,18 @@ import {
 import TipContainer from "./TipContainer";
 import MouseSelection from "./MouseSelection";
 
-import {scaledToViewport, viewportToScaled} from "../lib/coordinates";
+import { scaledToViewport, viewportToScaled } from "../lib/coordinates";
 
-import type {IHighlight, LTWH, LTWHP, Position, Scaled, ScaledPosition,} from "../types";
-import type {PDFDocumentProxy} from "pdfjs-dist";
-import ReactDOM from "react-dom/client";
+import type {
+  IHighlight,
+  LTWH,
+  LTWHP,
+  Position,
+  Scaled,
+  ScaledPosition,
+} from "../types";
+import type { PDFDocumentProxy } from "pdfjs-dist";
+import addMissingSpacesToSelection from "../lib/add-missing-spaces-to-selection";
 
 type T_ViewportHighlight<T_HT> = { position: Position } & T_HT;
 
@@ -110,6 +123,8 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
   resizeObserver: ResizeObserver | null = null;
   containerNode?: HTMLDivElement | null = null;
   unsubscribe = () => {};
+
+  highlightLayerRoots: Array<Root | null> = [];
 
   constructor(props: Props<T_HT>) {
     super(props);
@@ -311,97 +326,57 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
     for (let pageNumber = 1; pageNumber <= pdfDocument.numPages; pageNumber++) {
       const highlightLayer = this.findOrCreateHighlightLayer(pageNumber);
 
-      if (highlightLayer) {
-   const root = ReactDOM.createRoot(
-           highlightLayer as HTMLElement
-        );
-
-   root.render(
-       <div>
-         {(highlightsByPage[String(pageNumber)] || []).map(
-             ({ position, id, ...highlight }, index) => {
-               // @ts-ignore
-               const viewportHighlight: T_ViewportHighlight<T_HT> = {
-                 id,
-                 position: this.scaledPositionToViewport(position),
-                 ...highlight,
-               };
-
-               if (tip && tip.highlight.id === String(id)) {
-                 this.showTip(tip.highlight, tip.callback(viewportHighlight));
-               }
-
-               const isScrolledTo = Boolean(scrolledToHighlightId === id);
-
-               return highlightTransform(
-                   viewportHighlight,
-                   index,
-                   (highlight, callback) => {
-                     this.setState({
-                       tip: { highlight, callback },
-                     });
-
-                     this.showTip(highlight, callback(highlight));
-                   },
-                   this.hideTipAndSelection,
-                   (rect) => {
-                     const viewport = this.viewer.getPageView(
-                         (rect.pageNumber || pageNumber) - 1
-                     ).viewport;
-
-                     return viewportToScaled(rect, viewport);
-                   },
-                   (boundingRect) => this.screenshot(boundingRect, pageNumber),
-                   isScrolledTo
-               );
-             }
-         )}
-       </div>,
-   )
-/*        ReactDom.render(
-          <div>
-            {(highlightsByPage[String(pageNumber)] || []).map(
-              ({ position, id, ...highlight }, index) => {
-                // @ts-ignore
-                const viewportHighlight: T_ViewportHighlight<T_HT> = {
-                  id,
-                  position: this.scaledPositionToViewport(position),
-                  ...highlight,
-                };
-
-                if (tip && tip.highlight.id === String(id)) {
-                  this.showTip(tip.highlight, tip.callback(viewportHighlight));
-                }
-
-                const isScrolledTo = Boolean(scrolledToHighlightId === id);
-
-                return highlightTransform(
-                  viewportHighlight,
-                  index,
-                  (highlight, callback) => {
-                    this.setState({
-                      tip: { highlight, callback },
-                    });
-
-                    this.showTip(highlight, callback(highlight));
-                  },
-                  this.hideTipAndSelection,
-                  (rect) => {
-                    const viewport = this.viewer.getPageView(
-                      (rect.pageNumber || pageNumber) - 1
-                    ).viewport;
-
-                    return viewportToScaled(rect, viewport);
-                  },
-                  (boundingRect) => this.screenshot(boundingRect, pageNumber),
-                  isScrolledTo
-                );
-              }
-            )}
-          </div>,
-          highlightLayer
-        );*/
+      if (!highlightLayer) {
+        this.highlightLayerRoots[pageNumber] = null;
+        continue;
       }
+
+      if (!this.highlightLayerRoots[pageNumber]) {
+        this.highlightLayerRoots[pageNumber] = createRoot(highlightLayer);
+      }
+
+      this.highlightLayerRoots[pageNumber]!.render(
+        <div>
+          {(highlightsByPage[String(pageNumber)] || []).map(
+            ({ position, id, ...highlight }, index) => {
+              // @ts-ignore
+              const viewportHighlight: T_ViewportHighlight<T_HT> = {
+                id,
+                position: this.scaledPositionToViewport(position),
+                ...highlight,
+              };
+
+              if (tip && tip.highlight.id === String(id)) {
+                this.showTip(tip.highlight, tip.callback(viewportHighlight));
+              }
+
+              const isScrolledTo = Boolean(scrolledToHighlightId === id);
+
+              return highlightTransform(
+                viewportHighlight,
+                index,
+                (highlight, callback) => {
+                  this.setState({
+                    tip: { highlight, callback },
+                  });
+
+                  this.showTip(highlight, callback(highlight));
+                },
+                this.hideTipAndSelection,
+                (rect) => {
+                  const viewport = this.viewer.getPageView(
+                    (rect.pageNumber || pageNumber) - 1
+                  ).viewport;
+
+                  return viewportToScaled(rect, viewport);
+                },
+                (boundingRect) => this.screenshot(boundingRect, pageNumber),
+                isScrolledTo
+              );
+            }
+          )}
+        </div>
+      );
     }
   }
 
@@ -605,79 +580,8 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
       pageNumber: pages[0].number,
     };
 
-    function rangeToStringWithSpaces(range: Range) {
-      const ancestor = range.commonAncestorContainer;
-      let array = [];
-      /* If range has only one text node, then the startContainer 
-      will be the ancestor for the range. Treewalker works only on 
-      nodes under the root node. Extra empty space is added in order to 
-      streamline the string processing below.*/
-      if (ancestor.nodeType === 3) {
-        array.push(`${range.startContainer.textContent} `);
-      } else {
-        let node,
-          /* A TreeWalker to find only textnodes whose parent is <span>
-          so that we don't have to traverse all the nodes under ancestor. */
-          walk = document.createTreeWalker(ancestor, NodeFilter.SHOW_TEXT, {
-            acceptNode: function (node2) {
-              const parent = node2.parentNode;
-              if (parent?.nodeName === "SPAN") {
-                return NodeFilter.FILTER_ACCEPT;
-              } else return NodeFilter.FILTER_REJECT;
-            },
-          });
-
-        /* We need a way to recognize where the textnodes within the range start.
-        But what if the startContainer is not within the nodes filtered by
-        TreeWalker? Then the textnodes in range must start immediately 
-        at the beginning. Thus, isInRange must be set "true" at the outset.  */
-        let isInRange = range.startContainer.nodeType !== 3;
-
-        while ((node = walk.nextNode())) {
-          if (node === range.startContainer) {
-            isInRange = true;
-          }
-          if (isInRange && node.nodeType === 3) {
-            array.push(`${node.textContent} `);
-          }
-          if (node === range.endContainer) {
-            break;
-          }
-        }
-      }
-
-      /*These conditionals deal with the possibilities that
-      that the start and end containers are not textnodes
-      which would throw off the offset. Also, .length would not exist
-      for endContainer. */
-      const stringWithSpaces = array.join("");
-
-      if (
-        range.startContainer.nodeType !== 3 &&
-        range.endContainer.nodeType !== 3
-      ) {
-        return stringWithSpaces.trim();
-      } else if (range.startContainer.nodeType !== 3) {
-        return stringWithSpaces.slice(
-            0,
-            stringWithSpaces.length -
-            ((range.endContainer as Text).length - range.endOffset)
-        );
-      } else if (range.endContainer.nodeType !== 3) {
-        const slicedString = stringWithSpaces.slice(range.startOffset);
-        return slicedString.trim();
-      } else {
-        const slicedString = stringWithSpaces.slice(
-          range.startOffset,
-          stringWithSpaces.length -
-            ((range.endContainer as Text).length - range.endOffset + 1)
-        );
-        return slicedString.trim();
-      }
-    }
-
     const content = {
-      text: rangeToStringWithSpaces(range) || range.toString(),
+      text: addMissingSpacesToSelection(range) || range.toString(),
     };
 
     const scaledPosition = this.viewportPositionToScaled(viewportPosition);
