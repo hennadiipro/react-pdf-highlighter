@@ -1,6 +1,6 @@
 {
   "name": "@argument-studio/react-pdf-highlighter-with-categories",
-  "version": "6.0.2",
+  "version": "6.0.3",
   "description": "A modification of react-pdf-highlighter that categorizes highlights",
   "author": "Antti Hiltunen",
   "contributors": [
@@ -40,7 +40,7 @@
   "dependencies": {
     "@types/lodash.debounce": "^4.0.6",
     "lodash.debounce": "^4.0.8",
-    "pdfjs-dist": "3.0.279",
+    "pdfjs-dist": "3.5.141",
     "react-rnd": "^10.1.10"
   },
   "repository": {
