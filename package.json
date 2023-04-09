@@ -1,6 +1,6 @@
 {
   "name": "@argument-studio/react-pdf-highlighter-with-categories",
-  "version": "6.0.4",
+  "version": "6.0.5",
   "description": "A modification of react-pdf-highlighter that categorizes highlights",
   "author": "Antti Hiltunen",
   "contributors": [
@@ -51,6 +51,7 @@
     "url": "https://github.com/anttihil/react-pdf-highlighter-with-categories/issues"
   },
   "devDependencies": {
+    "@types/node": "18.15.11",
     "@types/react": "^18.0.30",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react-refresh": "^1.3.1",
@@ -58,7 +59,7 @@
     "jest-puppeteer": "^6.1.0",
     "prettier": "^2.3.2",
     "puppeteer": "^9.1.1",
-    "typescript": "4.4.2",
+    "typescript": "5.0.4",
     "vite": "^2.8.0"
   }
 }
