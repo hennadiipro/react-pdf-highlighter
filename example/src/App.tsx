@@ -23,6 +23,9 @@ interface State {
   url: string;
   highlights: Array<IHighlight>;
   categoryLabels: Array<{ label: string; background: string }>;
+  destinationPage: number;
+  pageCount: number;
+  currentPage: number;
 }
 
 const getNextId = () => String(Math.random()).slice(2);
@@ -63,6 +66,9 @@ class App extends Component<{}, State> {
       { label: "Premise", background: "#609b91" },
       { label: "Target", background: "#ce7e8b" },
     ],
+    destinationPage: 1,
+    pageCount: 0,
+    currentPage: 1,
   };
 
   resetHighlights = () => {
@@ -149,6 +155,82 @@ class App extends Component<{}, State> {
 
     return (
       <div className="App" style={{ display: "flex", height: "100vh" }}>
+        <div
+          style={{
+            position: "absolute",
+            left: "10px",
+            display: "flex",
+            gap: "10px",
+            zIndex: 100,
+          }}
+        >
+          <button
+            style={{
+              width: "70px",
+              height: "20px",
+              backgroundColor: "grey",
+              borderRadius: "5px",
+            }}
+            onClick={() =>
+              this.setState(({ currentPage }) => ({
+                destinationPage: currentPage > 1 ? currentPage - 1 : 1,
+              }))
+            }
+          >
+            Decrease
+          </button>
+          <div
+            style={{
+              height: "20px",
+              backgroundColor: "grey",
+              borderRadius: "5px",
+              textAlign: "center",
+              padding: "0 5px",
+            }}
+          >
+            {"Current page: " + this.state.currentPage}
+          </div>
+          <button
+            style={{
+              width: "70px",
+              height: "20px",
+              backgroundColor: "grey",
+              borderRadius: "5px",
+            }}
+            onClick={() =>
+              this.setState(({ currentPage }) => ({
+                destinationPage:
+                  currentPage < this.state.pageCount
+                    ? currentPage + 1
+                    : currentPage,
+              }))
+            }
+          >
+            Increase
+          </button>
+          <div
+            style={{
+              height: "20px",
+              backgroundColor: "grey",
+              borderRadius: "5px",
+              textAlign: "center",
+              padding: "0 5px",
+            }}
+          >
+            {"Pages: " + this.state.pageCount}
+          </div>
+          <button
+            style={{
+              width: "auto",
+              height: "20px",
+              backgroundColor: "grey",
+              borderRadius: "5px",
+            }}
+            onClick={() => this.setState({ destinationPage: 1 })}
+          >
+            Back to Page 1
+          </button>
+        </div>
         <Sidebar
           highlights={highlights}
           resetHighlights={this.resetHighlights}
@@ -175,6 +257,13 @@ class App extends Component<{}, State> {
                   this.scrollViewerTo = scrollTo;
 
                   this.scrollToHighlightFromHash();
+                }}
+                destinationPage={this.state.destinationPage}
+                getPageCount={(pageCount) => {
+                  this.setState({ pageCount });
+                }}
+                getCurrentPage={(currentPage) => {
+                  this.setState({ currentPage });
                 }}
                 onSelectionFinished={(
                   position,

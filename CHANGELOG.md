@@ -1,3 +1,11 @@
+# 7.0.0
+
+Added getPageCount, getCurrentPage props. These are not optional because most sensible readers would use them. Because this is a breaking change, I'm increasing the major version number.
+
+I also added a destinationPage as an optional prop. Whenever this prop is changed, the viewer navigates to that page number.
+
+The example app has been updated with bare bones UI to showcase these changes.
+
 # 6.0.0
 
 Upgraded to React 18 and added support for createRoot().
