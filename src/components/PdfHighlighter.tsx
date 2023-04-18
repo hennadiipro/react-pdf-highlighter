@@ -182,6 +182,10 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
     if (page && prevProps.destinationPage !== page) {
       this.goToPage(page);
     }
+
+    if (prevProps.pdfScaleValue !== this.props.pdfScaleValue) {
+      this.handleScaleValue();
+    }
   }
 
   init() {
