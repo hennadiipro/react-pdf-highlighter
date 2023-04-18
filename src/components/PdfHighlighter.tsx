@@ -149,9 +149,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
       const { ownerDocument: doc } = ref;
       eventBus.on("textlayerrendered", this.onTextLayerRendered);
       eventBus.on("pagesinit", this.onDocumentReady);
-      eventBus.on("pagechanging", () =>
-        this.props.getCurrentPage(this.viewer.currentPageNumber)
-      );
+      eventBus.on("pagechanging", this.onPageChange);
       doc.addEventListener("selectionchange", this.onSelectionChange);
       doc.addEventListener("keydown", this.handleKeyDown);
       doc.defaultView?.addEventListener("resize", this.debouncedScaleValue);
@@ -160,6 +158,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
       this.unsubscribe = () => {
         eventBus.off("pagesinit", this.onDocumentReady);
         eventBus.off("textlayerrendered", this.onTextLayerRendered);
+        eventBus.off("pagechanging", this.onPageChange);
         doc.removeEventListener("selectionchange", this.onSelectionChange);
         doc.removeEventListener("keydown", this.handleKeyDown);
         doc.defaultView?.removeEventListener(
@@ -505,6 +504,8 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
 
     this.props.getPageCount(this.viewer.pagesCount);
   };
+
+  onPageChange = () => this.props.getCurrentPage(this.viewer.currentPageNumber);
 
   onSelectionChange = () => {
     const container = this.containerNode;
