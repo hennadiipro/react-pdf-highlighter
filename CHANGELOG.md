@@ -1,3 +1,7 @@
+# 7.0.1
+
+pdfScaleValue prop change piped to pdf-viewer on component update.
+
 # 7.0.0
 
 Added getPageCount, getCurrentPage props. These are not optional because most sensible readers would use them. Because this is a breaking change, I'm increasing the major version number.
