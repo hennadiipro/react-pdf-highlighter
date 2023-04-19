@@ -1,4 +1,8 @@
-import React, { PointerEventHandler, PureComponent } from "react";
+import React, {
+  CSSProperties,
+  PointerEventHandler,
+  PureComponent,
+} from "react";
 import { Root, createRoot } from "react-dom/client";
 import debounce from "lodash.debounce";
 
@@ -92,6 +96,7 @@ interface Props<T_HT> {
   getPageCount: (pageCount: number) => void;
   getCurrentPage: (currentPage: number) => void;
   destinationPage?: number;
+  style?: CSSProperties;
 }
 
 const EMPTY_ID = "empty-id";
@@ -655,6 +660,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
           ref={this.attachRef}
           className="PdfHighlighter"
           onContextMenu={(e) => e.preventDefault()}
+          style={this.props.style}
         >
           <div className="pdfViewer" />
           {this.renderTip()}
