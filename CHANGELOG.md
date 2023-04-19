@@ -1,3 +1,7 @@
+# 7.0.2
+
+Added a style prop so that the PDFHighlighter div can be styled.
+
 # 7.0.1
 
 pdfScaleValue prop change piped to pdf-viewer on component update.
