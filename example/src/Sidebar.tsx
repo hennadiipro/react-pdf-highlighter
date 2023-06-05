@@ -8,6 +8,8 @@ interface Props {
   highlights: Array<IHighlight>;
   resetHighlights: () => void;
   toggleDocument: () => void;
+  setPdfUrl: (update: string) => void;
+  setPdfData: (update: Uint8Array) => void;
 }
 
 const updateHash = (highlight: IHighlight) => {
@@ -20,22 +22,83 @@ export function Sidebar({
   highlights,
   toggleDocument,
   resetHighlights,
+  setPdfUrl,
+  setPdfData,
 }: Props) {
   const [show, setShow] = useState(false);
+  const [urlInput, setUrlInput] = useState("");
+
+  const handleSetUrl = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setPdfUrl(urlInput);
+    setUrlInput("");
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (!file) {
+      console.log("No file chosen");
+      return;
+    }
+
+    //Step 2: Read the file using file reader
+    let fileReader = new FileReader();
+    fileReader.onerror = () => {
+      alert(`Error occurred while reading ${file?.name}`);
+    };
+    fileReader.onabort = () => {
+      console.log(`Reading ${file?.name} was aborted.`);
+    };
+    fileReader.onload = function () {
+      //Step 3:turn array buffer into typed array
+      if (this.result instanceof ArrayBuffer) {
+        setPdfData(new Uint8Array(this.result));
+      }
+    };
+    //Step 4:Read the file as ArrayBuffer
+    fileReader.readAsArrayBuffer(file);
+  };
 
   return (
     <div className="sidebar" style={{ width: "25vw" }}>
-      <div className="description" style={{ padding: "1rem" }}>
-        <h2 style={{ marginBottom: "1rem" }}>react-pdf-highlighter</h2>
-        <p>
-          <small>
-            To create area highlight hold ⌥ Option key (Alt), then click and
-            drag.
-          </small>
-        </p>
-      </div>
+      <div style={{ padding: "1rem" }}>
+        <div className="description">
+          <h2 style={{ marginBottom: "1rem" }}>react-pdf-highlighter</h2>
+          <p>
+            <small>
+              To create area highlight hold ⌥ Option key (Alt), then click and
+              drag.
+            </small>
+          </p>
+        </div>
 
-      <button onClick={() => setShow(true)}>Edit Categories</button>
+        <div className="sidebar__button-section">
+          <label htmlFor="url">Set PDF URL</label>
+          <input
+            type="url"
+            placeholder="Type a URL for a PDF"
+            onChange={(e) => setUrlInput(e.target.value)}
+          />
+          <button type="button" onClick={handleSetUrl}>
+            Set URL
+          </button>
+        </div>
+
+        <div className="sidebar__button-section">
+          <label htmlFor="file">Set local PDF file</label>
+          <input
+            type="file"
+            onChange={handleFileChange}
+            title="Set local PDF file"
+            placeholder="Set local PDF file"
+          />
+        </div>
+
+        <div className="sidebar__button-section">
+          <button onClick={() => setShow(true)}>Edit Categories</button>
+        </div>
+      </div>
 
       <ul className="sidebar__highlights">
         {highlights.map((highlight, index) => (

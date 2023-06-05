@@ -1,4 +1,4 @@
-.text-area-modal {
+.modal {
   display: flex;
   position: fixed;
   top: 0;
@@ -12,19 +12,19 @@
   z-index: 9000;
 }
 
-.text-area-modal--hide {
+.modal--hide {
   display: none;
 }
 
-.text-area-modal__form {
+.modal__form {
   width: 33%;
 }
 
-.text-area-modal__textarea {
+.modal__textarea {
   width: 100%;
 }
 
-.text-area-modal__content {
+.modal__content {
   width: 100%;
   background-color: rgb(207, 200, 200);
   opacity: 1;
@@ -32,18 +32,18 @@
   z-index: 9001;
 }
 
-.text-area-modal__header,
-.text-area-modal__footer {
+.modal__header,
+.modal__footer {
   padding: 10px;
   display: flex;
   justify-content: space-between;
 }
 
-.text-area-modal__title {
+.modal__title {
   margin: 0;
 }
 
-.text-area-modal__body {
+.modal__body {
   padding: 10px;
   border-top: 1px solid whitesmoke;
   border-bottom: 1px solid whitesmoke;
