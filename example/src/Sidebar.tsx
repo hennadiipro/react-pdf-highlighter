@@ -38,7 +38,7 @@ export function Sidebar({
     const file = e.target.files?.[0];
 
     if (!file) {
-      console.log("No file chosen");
+      console.warn("No file chosen");
       return;
     }
 
