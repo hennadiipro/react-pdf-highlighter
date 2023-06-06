@@ -45,7 +45,7 @@ import type {
   ScaledPosition,
 } from "../types";
 import type { PDFDocumentProxy } from "pdfjs-dist";
-import addMissingSpacesToSelection from "../lib/add-missing-spaces-to-selection";
+import { addMissingSpacesToSelection } from "../lib/selection-range-utils";
 
 type T_ViewportHighlight<T_HT> = { position: Position } & T_HT;
 
@@ -600,7 +600,6 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
     if (rects.length === 0) {
       return;
     }
-
     const boundingRect = getBoundingRect(rects);
 
     const viewportPosition: Position = {

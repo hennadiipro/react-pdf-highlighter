@@ -20,6 +20,7 @@ import "./style/App.css";
 const testHighlights: Record<string, Array<IHighlight>> = _testHighlights;
 
 interface State {
+  data: Uint8Array | null;
   url: string;
   highlights: Array<IHighlight>;
   categoryLabels: Array<{ label: string; background: string }>;
@@ -56,7 +57,8 @@ const searchParams = new URLSearchParams(document.location.search);
 const initialUrl = searchParams.get("url") || PRIMARY_PDF_URL;
 
 class App extends Component<{}, State> {
-  state = {
+  state: State = {
+    data: null,
     url: initialUrl,
     highlights: testHighlights[initialUrl]
       ? [...testHighlights[initialUrl]]
@@ -151,7 +153,7 @@ class App extends Component<{}, State> {
   }
 
   render() {
-    const { url, highlights } = this.state;
+    const { url, highlights, data } = this.state;
 
     return (
       <div className="App" style={{ display: "flex", height: "100vh" }}>
@@ -237,6 +239,12 @@ class App extends Component<{}, State> {
           toggleDocument={this.toggleDocument}
           categoryLabels={this.state.categoryLabels}
           setCategoryLabels={this.setCategoryLabels}
+          setPdfUrl={(url) => {
+            this.setState({ url, data: null, highlights: [] });
+          }}
+          setPdfData={(data) => {
+            this.setState({ data, url: "", highlights: [] });
+          }}
         />
         <div
           style={{
@@ -245,7 +253,7 @@ class App extends Component<{}, State> {
             position: "relative",
           }}
         >
-          <PdfLoader url={url} beforeLoad={<Spinner />}>
+          <PdfLoader url={url} beforeLoad={<Spinner />} data={data}>
             {(pdfDocument) => (
               <PdfHighlighter
                 categoryLabels={this.state.categoryLabels}

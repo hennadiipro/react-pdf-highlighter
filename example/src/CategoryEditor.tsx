@@ -1,5 +1,5 @@
 import React, { useState, Dispatch, SetStateAction } from "react";
-import "./style/TextAreaModal.css";
+import "./style/Modal.css";
 
 interface Props {
   categoryLabels: { label: string; background: string }[];
@@ -56,17 +56,17 @@ const CategoryEditor = ({
   };
 
   return (
-    <div className={`text-area-modal ${!show ? "text-area-modal--hide" : ""}`}>
-      <form className="text-area-modal__form">
-        <div className="text-area-modal__content">
+    <div className={`modal ${!show ? "modal--hide" : ""}`}>
+      <form className="modal__form">
+        <div className="modal__content">
           <label>
-            <div className="text-area-modal__header">
-              <h3 className="text-area-modal__title">Edit Categories</h3>
+            <div className="modal__header">
+              <h3 className="modal__title">Edit Categories</h3>
             </div>
           </label>
-          <div className="text-area-modal__body">
+          <div className="modal__body">
             <input
-              className="text-area-modal__textarea"
+              className="modal__textarea"
               value={labelInput}
               type="text"
               onChange={handleChange}
@@ -87,7 +87,7 @@ const CategoryEditor = ({
               );
             })}
           </ul>
-          <div className="text-area-modal__footer">
+          <div className="modal__footer">
             <button onClick={handleSubmit}>Save</button>
             <button type="button" onClick={handleCancel}>
               Cancel

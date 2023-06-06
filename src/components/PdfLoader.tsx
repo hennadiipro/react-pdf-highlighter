@@ -45,10 +45,7 @@ export class PdfLoader extends Component<Props, State> {
   }
 
   componentDidUpdate({ data, url }: Props) {
-    if (this.props.url !== url) {
-      this.load();
-    }
-    if (this.props.data !== data) {
+    if (this.props.url !== url || this.props.data !== data) {
       this.load();
     }
   }
@@ -77,23 +74,16 @@ export class PdfLoader extends Component<Props, State> {
       .then(() => discardedDocument && discardedDocument.destroy())
       .then(() => {
         const { data, url, ...otherProps } = this.props;
-        if (url) {
-          return getDocument({
-            url,
-            ownerDocument,
-            ...otherProps,
-          }).promise.then((pdfDocument) => {
-            this.setState({ pdfDocument });
-          });
-        } else if (data) {
-          return getDocument({
-            data,
-            ownerDocument,
-            ...otherProps,
-          }).promise.then((pdfDocument) => {
-            this.setState({ pdfDocument });
-          });
-        } else return;
+        if (!url && !data) return;
+
+        return getDocument({
+          url: url ?? undefined,
+          data: data ?? undefined,
+          ownerDocument,
+          ...otherProps,
+        }).promise.then((pdfDocument) => {
+          this.setState({ pdfDocument });
+        });
       })
       .catch((e) => this.componentDidCatch(e));
   }
