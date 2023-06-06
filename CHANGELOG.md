@@ -1,3 +1,11 @@
+# 7.1.2
+
+Fixed a bug on Firefox where on certain PDFs the client rectangles were not found correctly.
+
+Fixed a bug in PdfLoader.tsx where it was possible that the document would be loaded twice if both data and URL props changed.
+
+For the Example App, added buttons for setting PDF source and local file for debugging purposes.
+
 # 7.0.2
 
 Added a style prop so that the PDFHighlighter div can be styled.
