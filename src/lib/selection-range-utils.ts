@@ -29,16 +29,20 @@ export const getClientRectsInRange = (range: Range) => {
   }
 
   const clientRects = [];
-
   // text nodes don't have getBoundingClientRect, so we need to create a range
   let tempRange = document.createRange();
   let textNode;
   for (let idx = 0; idx < textNodes.length; idx++) {
     textNode = textNodes[idx];
+
     tempRange.selectNode(textNode);
-    if (idx === 0) tempRange.setStart(textNode, range.startOffset);
-    if (idx === textNodes.length - 1)
+    if (idx === 0) {
+      tempRange.setStart(textNode, range.startOffset);
+    }
+    if (idx === textNodes.length - 1) {
       tempRange.setEnd(textNode, range.endOffset);
+    }
+
     clientRects.push(tempRange.getBoundingClientRect());
   }
 
@@ -57,8 +61,8 @@ export function addMissingSpacesToSelection(range: Range) {
   We need to determine where to slice depending on whether the first and last nodes
   are text nodes or not. Text nodes comes with an offset, other nodes do not.
   */
-  let startIndex = startContainer instanceof Text ? startOffset : 0;
-  let endIndex =
+  const startIndex = startContainer instanceof Text ? startOffset : 0;
+  const endIndex =
     endContainer instanceof Text
       ? stringifiedRange.length - endContainer.length + endOffset
       : undefined;
